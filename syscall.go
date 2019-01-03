@@ -20,27 +20,29 @@ const (
 	SEC_E_LOGON_DENIED       = syscall.Errno(0x8009030c)
 	SEC_E_CONTEXT_EXPIRED    = syscall.Errno(0x80090317) // not sure if the value is valid
 	SEC_E_INCOMPLETE_MESSAGE = syscall.Errno(0x80090318)
+	SEC_E_INVALID_TOKEN      = syscall.Errno(0x80090308)
+	SEC_E_INVALID_HANDLE     = syscall.Errno(0x80090301)
 
 	NTLMSP_NAME             = "NTLM"
 	MICROSOFT_KERBEROS_NAME = "Kerberos"
 	NEGOSSP_NAME            = "Negotiate"
 	UNISP_NAME              = "Microsoft Unified Security Protocol Provider"
 
-	_SECPKG_ATTR_SIZES            = 0
-	_SECPKG_ATTR_NAMES            = 1
-	_SECPKG_ATTR_LIFESPAN         = 2
-	_SECPKG_ATTR_DCE_INFO         = 3
-	_SECPKG_ATTR_STREAM_SIZES     = 4
-	_SECPKG_ATTR_KEY_INFO         = 5
-	_SECPKG_ATTR_AUTHORITY        = 6
-	_SECPKG_ATTR_PROTO_INFO       = 7
-	_SECPKG_ATTR_PASSWORD_EXPIRY  = 8
-	_SECPKG_ATTR_SESSION_KEY      = 9
-	_SECPKG_ATTR_PACKAGE_INFO     = 10
-	_SECPKG_ATTR_USER_FLAGS       = 11
-	_SECPKG_ATTR_NEGOTIATION_INFO = 12
-	_SECPKG_ATTR_NATIVE_NAMES     = 13
-	_SECPKG_ATTR_FLAGS            = 14
+	SECPKG_ATTR_SIZES            = 0
+	SECPKG_ATTR_NAMES            = 1
+	SECPKG_ATTR_LIFESPAN         = 2
+	SECPKG_ATTR_DCE_INFO         = 3
+	SECPKG_ATTR_STREAM_SIZES     = 4
+	SECPKG_ATTR_KEY_INFO         = 5
+	SECPKG_ATTR_AUTHORITY        = 6
+	SECPKG_ATTR_PROTO_INFO       = 7
+	SECPKG_ATTR_PASSWORD_EXPIRY  = 8
+	SECPKG_ATTR_SESSION_KEY      = 9
+	SECPKG_ATTR_PACKAGE_INFO     = 10
+	SECPKG_ATTR_USER_FLAGS       = 11
+	SECPKG_ATTR_NEGOTIATION_INFO = 12
+	SECPKG_ATTR_NATIVE_NAMES     = 13
+	SECPKG_ATTR_FLAGS            = 14
 )
 
 type SecPkgInfo struct {
@@ -52,11 +54,41 @@ type SecPkgInfo struct {
 	Comment      *uint16
 }
 
-type _SecPkgContext_Sizes struct {
+type SecPkgContext_Sizes struct {
 	MaxToken        uint32
 	MaxSignature    uint32
 	BlockSize       uint32
 	SecurityTrailer uint32
+}
+
+type SecPkgContext_StreamSizes struct {
+	Header         uint32
+	Trailer        uint32
+	MaximumMessage uint32
+	Buffers        uint32
+	BlockSize      uint32
+}
+
+type SecPkgContext_ProtoInfo struct {
+	ProtocolName *uint16
+	MajorVersion uint32
+	MinorVersion uint32
+}
+
+type SecPkgContext_Names struct {
+	UserName *uint16
+}
+
+type SecPkgContext_Authority struct {
+	AuthorityName *uint16
+}
+
+type SecPkgContext_KeyInfo struct {
+	SignatureAlgorithmName *uint16
+	EncryptAlgorithmName   *uint16
+	KeySize                uint32
+	SignatureAlgorithm     uint32
+	EncryptAlgorithm       uint32
 }
 
 //sys	QuerySecurityPackageInfo(pkgname *uint16, pkginfo **SecPkgInfo) (ret syscall.Errno) = secur32.QuerySecurityPackageInfoW

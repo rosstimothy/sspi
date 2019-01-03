@@ -177,13 +177,13 @@ func (c *Context) RevertToSelf() error {
 // It returns the maximum token size used in authentication exchanges, the
 // maximum signature size, the preferred integral size of messages, the
 // size of any security trailer, and any error.
-func (c *Context) Sizes() (uint32, uint32, uint32, uint32, error) {
-	var s _SecPkgContext_Sizes
-	ret := QueryContextAttributes(c.Handle, _SECPKG_ATTR_SIZES, (*byte)(unsafe.Pointer(&s)))
+func (c *Context) Sizes() (*SecPkgContext_Sizes, error) {
+	var s SecPkgContext_Sizes
+	ret := QueryContextAttributes(c.Handle, SECPKG_ATTR_SIZES, (*byte)(unsafe.Pointer(&s)))
 	if ret != SEC_E_OK {
-		return 0, 0, 0, 0, ret
+		return nil, ret
 	}
-	return s.MaxToken, s.MaxSignature, s.BlockSize, s.SecurityTrailer, nil
+	return &s, nil
 }
 
 // VerifyFlags determines if all flags used to construct the context
